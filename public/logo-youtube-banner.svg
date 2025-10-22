@@ -1,0 +1,130 @@
+<svg width="2048" height="1152" viewBox="0 0 2048 1152" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradient for logo -->
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#79a1ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f48fb1;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Light background gradient -->
+    <radialGradient id="backgroundGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Light glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Subtle light pattern -->
+    <pattern id="dots" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <circle cx="50" cy="50" r="2" fill="#79a1ff" opacity="0.08"/>
+    </pattern>
+    
+    <!-- Tech circuit pattern for light mode -->
+    <pattern id="circuit" x="0" y="0" width="250" height="250" patternUnits="userSpaceOnUse">
+      <path d="M0 125 L250 125" stroke="#79a1ff" stroke-width="1" opacity="0.06"/>
+      <path d="M125 0 L125 250" stroke="#79a1ff" stroke-width="1" opacity="0.06"/>
+      <circle cx="62" cy="62" r="1.5" fill="#79a1ff" opacity="0.08"/>
+      <circle cx="188" cy="62" r="1.5" fill="#79a1ff" opacity="0.08"/>
+      <circle cx="62" cy="188" r="1.5" fill="#79a1ff" opacity="0.08"/>
+      <circle cx="188" cy="188" r="1.5" fill="#79a1ff" opacity="0.08"/>
+    </pattern>
+  </defs>
+  
+  <!-- Light background -->
+  <rect width="2048" height="1152" fill="url(#backgroundGradient)"/>
+  
+  <!-- Subtle pattern overlays -->
+  <rect width="2048" height="1152" fill="url(#dots)"/>
+  <rect width="2048" height="1152" fill="url(#circuit)" opacity="0.4"/>
+  
+  <!-- Main logo circle with light background -->
+  <circle cx="1024" cy="400" r="120" fill="#ffffff" opacity="0.95" stroke="url(#logoGradient)" stroke-width="4"/>
+  
+  <!-- Outer glow ring -->
+  <circle cx="1024" cy="400" r="135" fill="none" stroke="url(#logoGradient)" stroke-width="4" opacity="0.2" filter="url(#glow)"/>
+  
+  <!-- Main logo content -->
+  <g transform="translate(1024, 400)">
+    <!-- H shape -->
+    <rect x="-45" y="-45" width="15" height="90" fill="url(#logoGradient)" rx="7"/>
+    <rect x="-45" y="-7" width="90" height="15" fill="url(#logoGradient)" rx="7"/>
+    <rect x="30" y="-45" width="15" height="90" fill="url(#logoGradient)" rx="7"/>
+    
+    <!-- I shape -->
+    <rect x="60" y="-45" width="15" height="90" fill="url(#logoGradient)" rx="7"/>
+    
+    <!-- Tech circuit elements -->
+    <circle cx="-22" cy="-22" r="9" fill="url(#logoGradient)" opacity="0.8"/>
+    <circle cx="22" cy="-22" r="9" fill="url(#logoGradient)" opacity="0.8"/>
+    <circle cx="-22" cy="22" r="9" fill="url(#logoGradient)" opacity="0.8"/>
+    <circle cx="22" cy="22" r="9" fill="url(#logoGradient)" opacity="0.8"/>
+    
+    <!-- Connection lines -->
+    <path d="M-22 -22 L22 -22" stroke="url(#logoGradient)" stroke-width="3" opacity="0.6"/>
+    <path d="M-22 22 L22 22" stroke="url(#logoGradient)" stroke-width="3" opacity="0.6"/>
+    <path d="M-22 -22 L-22 22" stroke="url(#logoGradient)" stroke-width="3" opacity="0.6"/>
+    <path d="M22 -22 L22 22" stroke="url(#logoGradient)" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Additional tech elements -->
+    <circle cx="0" cy="-34" r="5" fill="url(#logoGradient)" opacity="0.7"/>
+    <circle cx="0" cy="34" r="5" fill="url(#logoGradient)" opacity="0.7"/>
+    <circle cx="-34" cy="0" r="5" fill="url(#logoGradient)" opacity="0.7"/>
+    <circle cx="34" cy="0" r="5" fill="url(#logoGradient)" opacity="0.7"/>
+  </g>
+  
+  <!-- Brand text -->
+  <text x="1024" y="650" text-anchor="middle" fill="url(#logoGradient)" font-family="Arial, sans-serif" font-size="80" font-weight="bold">
+    Her Impact
+  </text>
+  
+  <!-- Tagline -->
+  <text x="1024" y="700" text-anchor="middle" fill="#79a1ff" font-family="Arial, sans-serif" font-size="32" opacity="0.9">
+    Women in STEM
+  </text>
+  
+  <!-- New slogan -->
+  <text x="1024" y="750" text-anchor="middle" fill="#4a5568" font-family="Arial, sans-serif" font-size="24" opacity="0.8" font-style="italic">
+    "When she innovates, the world evolves."
+  </text>
+  
+  <!-- YouTube optimization elements -->
+  <!-- Safe area indicators (YouTube may crop edges) -->
+  <rect x="0" y="0" width="2048" height="1152" fill="none" stroke="#e2e8f0" stroke-width="2" opacity="0.3" stroke-dasharray="10,10"/>
+  
+  <!-- Decorative elements around the logo -->
+  <circle cx="240" cy="240" r="10" fill="url(#logoGradient)" opacity="0.2"/>
+  <circle cx="1808" cy="240" r="10" fill="url(#logoGradient)" opacity="0.2"/>
+  <circle cx="240" cy="912" r="10" fill="url(#logoGradient)" opacity="0.2"/>
+  <circle cx="1808" cy="912" r="10" fill="url(#logoGradient)" opacity="0.2"/>
+  
+  <!-- Corner decorative elements -->
+  <circle cx="120" cy="120" r="5" fill="url(#logoGradient)" opacity="0.3"/>
+  <circle cx="1928" cy="120" r="5" fill="url(#logoGradient)" opacity="0.3"/>
+  <circle cx="120" cy="1032" r="5" fill="url(#logoGradient)" opacity="0.3"/>
+  <circle cx="1928" cy="1032" r="5" fill="url(#logoGradient)" opacity="0.3"/>
+  
+  <!-- Side decorative lines -->
+  <line x1="80" y1="0" x2="80" y2="1152" stroke="url(#logoGradient)" stroke-width="2" opacity="0.15"/>
+  <line x1="1968" y1="0" x2="1968" y2="1152" stroke="url(#logoGradient)" stroke-width="2" opacity="0.15"/>
+  
+  <!-- Top and bottom decorative lines -->
+  <line x1="0" y1="80" x2="2048" y2="80" stroke="url(#logoGradient)" stroke-width="2" opacity="0.15"/>
+  <line x1="0" y1="1072" x2="2048" y2="1072" stroke="url(#logoGradient)" stroke-width="2" opacity="0.15"/>
+  
+  <!-- YouTube channel elements -->
+  <text x="160" y="160" text-anchor="start" fill="#79a1ff" font-family="Arial, sans-serif" font-size="20" opacity="0.7">
+    Subscribe for more inspiring stories
+  </text>
+  
+  <text x="1888" y="160" text-anchor="end" fill="#79a1ff" font-family="Arial, sans-serif" font-size="20" opacity="0.7">
+    Women in STEM
+  </text>
+</svg>

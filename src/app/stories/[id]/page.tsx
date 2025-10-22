@@ -251,80 +251,93 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
       {/* Article Content */}
       <section className="bg-[#070b16] py-20">
         <div className="container-page">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 xl:grid-cols-5 gap-8">
               {/* Main Content */}
-              <div className="lg:col-span-3">
+              <div className="xl:col-span-3">
                 <div 
-                  className="prose prose-lg prose-invert max-w-none"
+                  className="prose prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-strong:text-white prose-ul:text-white/90 prose-li:text-white/90"
                   dangerouslySetInnerHTML={{ __html: article.content }}
                 />
               </div>
 
-              {/* Sidebar */}
-              <div className="lg:col-span-1">
+              {/* Enhanced Sidebar - Now Wider */}
+              <div className="xl:col-span-2">
                 <div className="sticky top-24 space-y-6">
-                  {/* Author Card */}
-                  <div className="card-glow p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center">
-                        <User size={20} className="text-white" />
+                  {/* Enhanced Author Card */}
+                  <div className="card-glow p-8">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center flex-shrink-0">
+                        <User size={24} className="text-white" />
                       </div>
-                      <div>
-                        <h3 className="subheading text-lg">{article.author}</h3>
-                        <p className="text-sm text-white/60">Author</p>
+                      <div className="flex-1">
+                        <h3 className="subheading text-xl mb-1">{article.author}</h3>
+                        <p className="text-sm text-white/60 mb-2">Author & Researcher</p>
+                        <div className="flex items-center gap-2 text-xs text-white/50">
+                          <CalendarIcon size={12} />
+                          <span>Published {article.date}</span>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm text-white/70 mb-4">{article.authorBio}</p>
-                    <button className="w-full btn btn-outline text-sm">
-                      Follow Author
-                    </button>
+                    <p className="text-sm text-white/80 mb-6 leading-relaxed">{article.authorBio}</p>
+                    <div className="flex gap-3">
+                      <button className="flex-1 btn btn-primary btn-glow bg-white text-[#0b3d91] text-sm">
+                        Follow Author
+                      </button>
+                      <button className="btn btn-outline text-sm">
+                        <MessageSquare size={16} />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Social Actions */}
-                  <div className="card-glow p-6">
-                    <h3 className="subheading text-lg mb-4">Share this article</h3>
-                    <div className="space-y-3">
+                  {/* Enhanced Social Actions */}
+                  <div className="card-glow p-8">
+                    <h3 className="subheading text-xl mb-6">Share this article</h3>
+                    <div className="space-y-4">
                       <button
                         onClick={handleLike}
-                        className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${
-                          isLiked ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-white/80 hover:bg-white/10'
+                        className={`w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-200 ${
+                          isLiked 
+                            ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                            : 'bg-white/5 text-white/80 hover:bg-white/10 border border-white/10'
                         }`}
                       >
                         <Heart size={20} className={isLiked ? 'fill-current' : ''} />
-                        {isLiked ? 'Liked' : 'Like'} ({likes})
+                        <span className="font-medium">
+                          {isLiked ? 'Liked' : 'Like'} ({likes.toLocaleString()})
+                        </span>
                       </button>
                       
                       <div className="relative">
                         <button
                           onClick={() => setShowShareMenu(!showShareMenu)}
-                          className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 text-white/80 hover:bg-white/10 transition-colors"
+                          className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/5 text-white/80 hover:bg-white/10 transition-all duration-200 border border-white/10"
                         >
                           <Share2 size={20} />
-                          Share
+                          <span className="font-medium">Share</span>
                         </button>
                         
                         {showShareMenu && (
-                          <div className="absolute top-full left-0 right-0 mt-2 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-lg p-2 space-y-1">
-                            <button onClick={() => handleShare('twitter')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                              <Twitter size={16} />
-                              Twitter
+                          <div className="absolute top-full left-0 right-0 mt-3 bg-[rgba(6,10,22,0.98)] backdrop-blur-xl border border-white/20 rounded-xl p-4 space-y-2 shadow-2xl">
+                            <button onClick={() => handleShare('twitter')} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                              <Twitter size={18} />
+                              <span>Share on Twitter</span>
                             </button>
-                            <button onClick={() => handleShare('linkedin')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                              <Linkedin size={16} />
-                              LinkedIn
+                            <button onClick={() => handleShare('linkedin')} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                              <Linkedin size={18} />
+                              <span>Share on LinkedIn</span>
                             </button>
-                            <button onClick={() => handleShare('facebook')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                              <Facebook size={16} />
-                              Facebook
+                            <button onClick={() => handleShare('facebook')} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                              <Facebook size={18} />
+                              <span>Share on Facebook</span>
                             </button>
-                            <button onClick={() => handleShare('email')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                              <Mail size={16} />
-                              Email
+                            <button onClick={() => handleShare('email')} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                              <Mail size={18} />
+                              <span>Share via Email</span>
                             </button>
-                            <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5">
-                              <Copy size={16} />
-                              Copy Link
+                            <button onClick={() => handleShare('copy')} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors">
+                              <Copy size={18} />
+                              <span>Copy Link</span>
                             </button>
                           </div>
                         )}
@@ -332,21 +345,56 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
                     </div>
                   </div>
 
-                  {/* Article Stats */}
-                  <div className="card-glow p-6">
-                    <h3 className="subheading text-lg mb-4">Article Stats</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-white/60">Views</span>
-                        <span className="text-white">{article.views.toLocaleString()}</span>
+                  {/* Enhanced Article Stats */}
+                  <div className="card-glow p-8">
+                    <h3 className="subheading text-xl mb-6">Article Performance</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                        <div className="flex items-center gap-3">
+                          <Eye size={18} className="text-blue-400" />
+                          <span className="text-white/80">Views</span>
+                        </div>
+                        <span className="text-white font-semibold">{article.views.toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-white/60">Likes</span>
-                        <span className="text-white">{likes.toLocaleString()}</span>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                        <div className="flex items-center gap-3">
+                          <Heart size={18} className="text-red-400" />
+                          <span className="text-white/80">Likes</span>
+                        </div>
+                        <span className="text-white font-semibold">{likes.toLocaleString()}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-white/60">Comments</span>
-                        <span className="text-white">{comments.length}</span>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                        <div className="flex items-center gap-3">
+                          <MessageSquare size={18} className="text-green-400" />
+                          <span className="text-white/80">Comments</span>
+                        </div>
+                        <span className="text-white font-semibold">{comments.length}</span>
+                      </div>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                        <div className="flex items-center gap-3">
+                          <Clock size={18} className="text-purple-400" />
+                          <span className="text-white/80">Read Time</span>
+                        </div>
+                        <span className="text-white font-semibold">{article.readTime}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Related Articles */}
+                  <div className="card-glow p-8">
+                    <h3 className="subheading text-xl mb-6">Related Articles</h3>
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                        <h4 className="text-white font-medium mb-2">Women Leading AI Innovation</h4>
+                        <p className="text-sm text-white/60">5 min read</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                        <h4 className="text-white font-medium mb-2">Breaking Barriers in Tech</h4>
+                        <p className="text-sm text-white/60">7 min read</p>
+                      </div>
+                      <div className="p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                        <h4 className="text-white font-medium mb-2">The Future of Healthcare AI</h4>
+                        <p className="text-sm text-white/60">6 min read</p>
                       </div>
                     </div>
                   </div>
@@ -360,7 +408,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
       {/* Comments Section */}
       <section className="bg-[#0a0f1f] py-20">
         <div className="container-page">
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h2 className="section-title text-3xl mb-8">Comments ({comments.length})</h2>
             
             {/* Add Comment */}

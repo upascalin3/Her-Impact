@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { 
   Home as HomeIcon, 
   Grid3X3, 
@@ -33,11 +33,80 @@ import {
   Sparkles,
   Target,
   Zap,
-  ChevronDown
+  ChevronDown,
+  PenTool,
+  Award
 } from "lucide-react";
 
 export default function Home() {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  
+  // Handle keyboard navigation for dropdown
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isCategoriesOpen) return;
+    
+    const totalItems = categories.length + 1; // +1 for "All Articles" link
+    
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setFocusedIndex(prev => (prev + 1) % totalItems);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setFocusedIndex(prev => prev <= 0 ? totalItems - 1 : prev - 1);
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setIsCategoriesOpen(false);
+        setFocusedIndex(-1);
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        if (focusedIndex === 0) {
+          window.location.href = '/articles';
+        } else if (focusedIndex > 0) {
+          window.location.href = categories[focusedIndex - 1].href;
+        }
+        break;
+    }
+  };
+
+  // Handle dropdown toggle
+  const toggleDropdown = () => {
+    setIsCategoriesOpen(!isCategoriesOpen);
+    setFocusedIndex(-1);
+  };
+
+  // Handle mouse enter/leave
+  const handleMouseEnter = () => {
+    setIsCategoriesOpen(true);
+    setFocusedIndex(-1);
+  };
+
+  const handleMouseLeave = () => {
+    setIsCategoriesOpen(false);
+    setFocusedIndex(-1);
+  };
+
+  // Handle click outside to close dropdown
+  const handleClickOutside = (e: MouseEvent) => {
+    const target = e.target as Element;
+    if (!target.closest('.dropdown-container')) {
+      setIsCategoriesOpen(false);
+      setFocusedIndex(-1);
+    }
+  };
+
+  // Add event listener for click outside
+  React.useEffect(() => {
+    if (isCategoriesOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isCategoriesOpen]);
   
   // Enable/disable arrows based on scroll position
   const onStoriesScroll = () => {
@@ -52,15 +121,15 @@ export default function Home() {
   };
 
   const categories = [
-    { title: "Impact Stories", href: "/categories/impact-stories", icon: Heart, desc: "Real journeys of women breaking barriers" },
-    { title: "STEM Innovations", href: "/categories/stem-innovations", icon: Lightbulb, desc: "Groundbreaking projects and technologies" },
-    { title: "Career & Empowerment", href: "/categories/career-empowerment", icon: TrendingUp, desc: "Tools and guidance for STEM careers" },
-    { title: "Education & Learning", href: "/categories/education-learning", icon: GraduationCap, desc: "Tutorials and learning resources" },
-    { title: "Community & Collaboration", href: "/categories/community-collaboration", icon: Users2, desc: "Global networks and projects" },
-    { title: "Research & Insights", href: "/categories/research-insights", icon: BookOpenCheck, desc: "Studies and data about women in STEM" },
-    { title: "Voices & Perspectives", href: "/categories/voices-perspectives", icon: MessageSquare, desc: "Opinion articles and thought pieces" },
-    { title: "Events & Opportunities", href: "/categories/events-opportunities", icon: Calendar, desc: "Scholarships and conferences" },
-    { title: "Women's History", href: "/categories/womens-history", icon: History, desc: "Honoring STEM pioneers" }
+    { title: "Impact Stories", href: "/articles?category=impact-stories", icon: Heart, desc: "Real journeys of women breaking barriers" },
+    { title: "STEM Innovations", href: "/articles?category=stem-innovations", icon: Lightbulb, desc: "Groundbreaking projects and technologies" },
+    { title: "Career & Empowerment", href: "/articles?category=career-empowerment", icon: TrendingUp, desc: "Tools and guidance for STEM careers" },
+    { title: "Education & Learning", href: "/articles?category=education-learning", icon: GraduationCap, desc: "Tutorials and learning resources" },
+    { title: "Community & Collaboration", href: "/articles?category=community-collaboration", icon: Users2, desc: "Global networks and projects" },
+    { title: "Research & Insights", href: "/articles?category=research-insights", icon: BookOpenCheck, desc: "Studies and data about women in STEM" },
+    { title: "Voices & Perspectives", href: "/articles?category=voices-perspectives", icon: MessageSquare, desc: "Opinion articles and thought pieces" },
+    { title: "Events & Opportunities", href: "/articles?category=events-opportunities", icon: Calendar, desc: "Scholarships and conferences" },
+    { title: "Women's History", href: "/articles?category=womens-history", icon: History, desc: "Honoring STEM pioneers" }
   ];
   return (
     <main className="font-sans">
@@ -72,68 +141,105 @@ export default function Home() {
             <span className="subheading">Her Impact</span>
           </div>
           <nav className="hidden md:flex items-center gap-8 text-white/80">
-            <a href="#hero" className="hover:text-white flex items-center gap-2">
+            <a href="/" className="hover:text-white flex items-center gap-2">
               <HomeIcon size={16} />
               Home
             </a>
-            <div className="relative group">
-              <button 
-                className="hover:text-white flex items-center gap-2"
-                onMouseEnter={() => setIsCategoriesOpen(true)}
-                onMouseLeave={() => setIsCategoriesOpen(false)}
-              >
-                <Grid3X3 size={16} />
-                Categories
-                <ChevronDown size={14} className={`transition-transform ${isCategoriesOpen ? 'rotate-180' : ''}`} />
-              </button>
-              {isCategoriesOpen && (
-                <div 
-                  className="absolute top-full left-0 mt-2 w-80 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-xl shadow-2xl z-50"
-                  onMouseEnter={() => setIsCategoriesOpen(true)}
-                  onMouseLeave={() => setIsCategoriesOpen(false)}
+      <div className="relative group dropdown-container">
+        <button 
+          className="hover:text-white flex items-center gap-2"
+          onClick={toggleDropdown}
+          onKeyDown={handleKeyDown}
+          aria-expanded={isCategoriesOpen}
+          aria-haspopup="true"
+          aria-label="Articles menu"
+          id="articles-button"
+        >
+          <BookOpen size={16} />
+          Articles
+          <ChevronDown size={14} className={`transition-transform ${isCategoriesOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isCategoriesOpen && (
+          <div 
+            className="absolute top-full left-0 mt-2 w-80 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-xl shadow-2xl z-50"
+            role="menu"
+            aria-labelledby="articles-button"
+            aria-orientation="vertical"
+          >
+            <div className="p-4">
+              <div className="text-sm text-white/60 mb-3 font-medium">Explore Articles</div>
+              <div className="grid grid-cols-1 gap-2">
+                <a
+                  href="/articles"
+                  className={`flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group ${
+                    focusedIndex === 0 ? 'bg-white/10' : ''
+                  }`}
+                  role="menuitem"
+                  tabIndex={-1}
+                  onFocus={() => setFocusedIndex(0)}
                 >
-                  <div className="p-4">
-                    <div className="text-sm text-white/60 mb-3 font-medium">Explore Categories</div>
-                    <div className="grid grid-cols-1 gap-2">
-                      {categories.map((category, i) => (
-                        <a
-                          key={category.title}
-                          href={category.href}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group"
-                        >
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1]">
-                            <category.icon size={16} className="text-white" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="text-white text-sm font-medium group-hover:text-white/90">
-                              {category.title}
-                            </div>
-                            <div className="text-white/60 text-xs">
-                              {category.desc}
-                            </div>
-                          </div>
-                          <ArrowRight size={14} className="text-white/40 group-hover:text-white/60" />
-                        </a>
-                      ))}
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1]">
+                    <BookOpen size={16} className="text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-white text-sm font-medium group-hover:text-white/90">
+                      All Articles
                     </div>
-                    <div className="mt-4 pt-3 border-t border-white/10">
-                      <a href="#categories" className="flex items-center gap-2 text-white/80 hover:text-white text-sm">
-                        <Grid3X3 size={14} />
-                        View All Categories
-                      </a>
+                    <div className="text-white/60 text-xs">
+                      Browse all articles across categories
                     </div>
                   </div>
-                </div>
-              )}
+                  <ArrowRight size={14} className="text-white/40 group-hover:text-white/60" />
+                </a>
+                {categories.map((category, i) => (
+                  <a
+                    key={category.title}
+                    href={category.href}
+                    className={`flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors group ${
+                      focusedIndex === i + 1 ? 'bg-white/10' : ''
+                    }`}
+                    role="menuitem"
+                    tabIndex={-1}
+                    onFocus={() => setFocusedIndex(i + 1)}
+                  >
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1]">
+                      <category.icon size={16} className="text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-white text-sm font-medium group-hover:text-white/90">
+                        {category.title}
+                      </div>
+                      <div className="text-white/60 text-xs">
+                        {category.desc}
+                      </div>
+                    </div>
+                    <ArrowRight size={14} className="text-white/40 group-hover:text-white/60" />
+                  </a>
+                ))}
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/10">
+                <a 
+                  href="/articles/write" 
+                  className="flex items-center gap-2 text-white/80 hover:text-white text-sm"
+                  role="menuitem"
+                  tabIndex={-1}
+                >
+                  <PenTool size={14} />
+                  Write Article
+                </a>
+              </div>
             </div>
+          </div>
+        )}
+      </div>
             <div className="relative group">
-              <a href="#stories" className="hover:text-white flex items-center gap-2">
+              <a href="/stories" className="hover:text-white flex items-center gap-2">
                 <BookOpen size={16} />
                 Stories
               </a>
               <div className="absolute top-full left-0 mt-2 w-48 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-xl shadow-2xl z-50 opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="p-2">
-                  <a href="#stories" className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white/80 hover:text-white">
+                  <a href="/stories" className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white/80 hover:text-white">
                     <BookOpen size={16} />
                     Featured Stories
                   </a>
@@ -152,7 +258,7 @@ export default function Home() {
               <Target size={16} />
               Opportunities
             </a>
-            <a href="#newsletter" className="pill flex items-center gap-2">
+            <a href="/contact" className="pill flex items-center gap-2">
               <Mail size={16} />
               Contact
             </a>
@@ -175,11 +281,11 @@ export default function Home() {
               </h1>
               <p className="body-text text-base md:text-lg text-[#c9d4ff] mb-8 max-w-xl">Her Impact is a digital platform celebrating women who shape the future through Science, Technology, Engineering, and Mathematics — and honor the trailblazers who paved the way.</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#stories" className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2">
+                <a href="/stories" className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2">
                   <BookOpen size={18} />
                   Discover Stories
                 </a>
-                <a href="#community" className="pill flex items-center gap-2">
+                <a href="/community" className="pill flex items-center gap-2">
                   <Users size={18} />
                   Join the Community
                   <ArrowRight size={16} />
@@ -290,27 +396,27 @@ export default function Home() {
           <p className="body-text text-center text-white/70 max-w-2xl mx-auto mb-10">Discover stories, resources, and opportunities to empower women in STEM.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { title: "Impact Stories", desc: "Real journeys of women breaking barriers and leading change.", icon: Heart },
-              { title: "STEM Innovations", desc: "Groundbreaking projects and emerging technologies driven by women.", icon: Lightbulb },
-              { title: "Career & Empowerment", desc: "Tools, guidance, and mentorship for women navigating STEM careers.", icon: TrendingUp },
-              { title: "Education & Learning", desc: "Hands-on tutorials, study resources, and learning tools for all ages.", icon: GraduationCap },
-              { title: "Community & Collaboration", desc: "Global networks and projects uniting women in STEM.", icon: Users2 },
-              { title: "Research & Insights", desc: "Studies, data, and trends about women's progress in STEM.", icon: BookOpenCheck },
-              { title: "Voices & Perspectives", desc: "Opinion articles and thought pieces from women in STEM.", icon: MessageSquare },
-              { title: "Events & Opportunities", desc: "Scholarships, workshops, and conferences empowering women.", icon: Calendar },
-              { title: "Women's History", desc: "Honoring pioneers who changed the course of STEM.", icon: History },
+              { title: "Impact Stories", desc: "Real journeys of women breaking barriers and leading change.", icon: Heart, href: "/articles?category=impact-stories" },
+              { title: "STEM Innovations", desc: "Groundbreaking projects and emerging technologies driven by women.", icon: Lightbulb, href: "/articles?category=stem-innovations" },
+              { title: "Career & Empowerment", desc: "Tools, guidance, and mentorship for women navigating STEM careers.", icon: TrendingUp, href: "/articles?category=career-empowerment" },
+              { title: "Education & Learning", desc: "Hands-on tutorials, study resources, and learning tools for all ages.", icon: GraduationCap, href: "/articles?category=education-learning" },
+              { title: "Community & Collaboration", desc: "Global networks and projects uniting women in STEM.", icon: Users2, href: "/articles?category=community-collaboration" },
+              { title: "Research & Insights", desc: "Studies, data, and trends about women's progress in STEM.", icon: BookOpenCheck, href: "/articles?category=research-insights" },
+              { title: "Voices & Perspectives", desc: "Opinion articles and thought pieces from women in STEM.", icon: MessageSquare, href: "/articles?category=voices-perspectives" },
+              { title: "Events & Opportunities", desc: "Scholarships, workshops, and conferences empowering women.", icon: Calendar, href: "/articles?category=events-opportunities" },
+              { title: "Women's History", desc: "Honoring pioneers who changed the course of STEM.", icon: History, href: "/articles?category=womens-history" },
             ].map((c, i) => (
-              <div key={c.title} className="card-glow p-6 reveal" style={{animationDelay: `${0.05 * i}s`}}>
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1]">
+              <a key={c.title} href={c.href} className="card-glow p-6 reveal hover:bg-white/5 transition-colors group" style={{animationDelay: `${0.05 * i}s`}}>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] group-hover:scale-110 transition-transform">
                   <c.icon size={24} className="text-white" />
                 </div>
                 <h3 className="subheading text-xl mb-2">{c.title}</h3>
                 <p className="body-text text-white/70">{c.desc}</p>
-              </div>
+              </a>
             ))}
           </div>
           <div className="text-center mt-10">
-            <a href="#community" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Join the Community</a>
+            <a href="/community" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Join the Community</a>
           </div>
         </div>
       </section>
@@ -328,7 +434,7 @@ export default function Home() {
               <div className="pill w-max mb-3">Featured Stories</div>
               <h2 className="section-title text-3xl md:text-4xl">Inspiring Journeys and Innovations</h2>
             </div>
-            <a href="#categories" className="pill">Explore Categories →</a>
+            <a href="/articles" className="pill">Explore Categories →</a>
           </div>
           <div className="relative">
             <div className="edge-fade-left" aria-hidden />
@@ -347,11 +453,11 @@ export default function Home() {
                   <h3 className="subheading text-xl mb-2 text-white">{s.t}</h3>
                   <p className="body-text text-[#c9d4ff] mb-4 flex-1">A snapshot of groundbreaking work reshaping our world.</p>
                   <div className="flex items-center gap-3 mt-auto">
-                    <a className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2" href="#">
+                    <a className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2" href="/stories">
                       <BookOpen size={16} />
                       Read More
                     </a>
-                    <a className="pill flex items-center gap-2" href="#">
+                    <a className="pill flex items-center gap-2" href="/stories">
                       <Share2 size={16} />
                       Share
                       <ArrowRight size={14} />
@@ -418,17 +524,26 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <div className="reveal">
               <div className="pill w-max mb-3">Impact Maker of the Month</div>
-              <h2 className="section-title text-3xl md:text-4xl mb-4">Trailblazing Women in STEM</h2>
+              <h2 className="section-title text-3xl md:text-4xl mb-4">Dr. Claire Karekezi</h2>
               <div className="glass glow-ring rounded-2xl p-6">
-                <p className="body-text text-[#c9d4ff] text-lg mb-4">Each month, we spotlight a trailblazing woman in STEM who is driving innovation and inspiring change. From groundbreaking research to transformative leadership, these women are shaping the future.</p>
-                <p className="body-text italic text-white/90 mb-6">“Her innovation sparks progress, her leadership inspires change, and her impact transforms the world.”</p>
-                <a href="#about" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Discover More Trailblazers</a>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center">
+                    <Award size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h3 className="subheading text-xl">Pioneering Neurosurgeon</h3>
+                    <p className="body-text text-white/70">Rwanda's First Female Neurosurgeon</p>
+                  </div>
+                </div>
+                <p className="body-text text-[#c9d4ff] text-lg mb-4">Dr. Claire Karekezi has transformed healthcare in East Africa by establishing Rwanda's first comprehensive neurosurgery program, proving that excellence knows no geographic boundaries.</p>
+                <p className="body-text italic text-white/90 mb-6">"When I started my journey in neurosurgery, I was told this field was not for women, especially not for African women. Today, I'm proud to say we've proven that excellence knows no gender or geographic boundaries."</p>
+                <a href="/stories/dr-claire-karekezi-neurosurgery-pioneer" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Read Her Story</a>
               </div>
             </div>
             <div className="reveal reveal-delay-2">
               <div className="relative w-full max-w-md mx-auto aspect-square glow-ring glass rounded-2xl overflow-hidden">
                 <div className="absolute inset-0 dots-wave opacity-60" />
-                <Image src="/file.svg" alt="Impact Maker portrait" fill className="object-contain p-16 invert" />
+                <Image src="/Dr-Claire-Karekezi.png" alt="Dr. Claire Karekezi - Trailblazing Woman in STEM" fill className="object-cover rounded-2xl" />
               </div>
             </div>
           </div>
@@ -450,8 +565,8 @@ export default function Home() {
               <div className="glass glow-ring rounded-2xl p-6">
                 <p className="body-text text-[#e3e9fb] mb-6">Join a vibrant community of women and allies in STEM. Share your story, collaborate on projects, and celebrate the impact of women driving change worldwide.</p>
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <a href="#newsletter" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Join Our Newsletter</a>
-                  <a href="#contribute" className="pill">Become a Contributor →</a>
+                  <a href="/contact" className="btn btn-primary btn-glow bg-white text-[#0b3d91]">Join Our Newsletter</a>
+                  <a href="/articles/write" className="pill">Become a Contributor →</a>
                 </div>
               </div>
               <div className="mt-6 grid grid-cols-3 gap-4 text-center">
@@ -499,38 +614,97 @@ export default function Home() {
         <div className="swoosh primary" aria-hidden />
         <div className="swoosh secondary" aria-hidden />
         <div className="relative container-page py-20">
-          <div className="flex flex-col md:flex-row items-start justify-between gap-10">
-            <div>
-              <div className="subheading text-xl">Her Impact</div>
-              <div className="body-text text-[#c9d4ff]">“Because when she innovates, the world moves forward.”</div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+            {/* Brand Section */}
+            <div className="md:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <img src="/logo.svg" alt="Her Impact Logo" className="w-8 h-8" />
+                <span className="subheading text-xl">Her Impact</span>
+              </div>
+              <p className="body-text text-[#c9d4ff] mb-6">"Because when she innovates, the world moves forward."</p>
+              <div className="flex items-center gap-3">
+                {[
+                  {name: "LinkedIn", icon: Linkedin, url: "https://linkedin.com/company/her-impact", color: "text-blue-400" },
+                  {name: "Twitter", icon: Twitter, url: "https://x.com/herimpactrw", color: "text-blue-300" },
+                  {name: "Instagram", icon: Instagram, url: "https://www.instagram.com/herimpact.rw/", color: "text-pink-400" },
+                  {name: "YouTube", icon: Youtube, url: "https://www.youtube.com/@herimpact-t5f", color: "text-red-400" },
+                  {name: "Gmail", icon: Mail, url: "mailto:herimpactrw@gmail.com", color: "text-red-500" },
+                ].map((social, index) => (
+                  <a
+                    key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors group"
+                    aria-label={social.name}
+                  >
+                    <social.icon size={18} className={`${social.color} group-hover:scale-110 transition-transform`} />
+                  </a>
+                ))}
+              </div>
             </div>
-            <nav className="grid grid-cols-2 sm:grid-cols-3 gap-y-3 gap-x-8">
-              {[
-                {href: "#hero", label: "Home"},
-                {href: "#about", label: "About"},
-                {href: "#categories", label: "Categories"},
-                {href: "#stories", label: "Stories"},
-                {href: "#community", label: "Community"},
-                {href: "#newsletter", label: "Contact"},
-              ].map((l) => (
-                <a key={l.label} href={l.href} className="body-text text-[#e3e9fb] hover:text-[var(--secondary)] transition-colors">{l.label}</a>
-              ))}
-            </nav>
-            <div className="flex items-center gap-3">
-              {[
-                {alt: "LinkedIn", src: "/globe.svg"},
-                {alt: "X", src: "/globe.svg"},
-                {alt: "Instagram", src: "/globe.svg"},
-                {alt: "YouTube", src: "/globe.svg"},
-              ].map((s) => (
-                <a key={s.alt} href="#" className="icon-button" aria-label={s.alt}>
-                  <Image src={s.src} alt={s.alt} width={18} height={18} className="invert" />
-                </a>
-              ))}
+
+            {/* Navigation Links */}
+            <div>
+              <h3 className="subheading text-lg mb-4">Explore</h3>
+              <nav className="space-y-3">
+                {[
+                  {href: "/", label: "Home"},
+                  {href: "/stories", label: "Stories"},
+                  {href: "/articles", label: "Articles"},
+                  {href: "/opportunities", label: "Opportunities"},
+                ].map((link) => (
+                  <a key={link.label} href={link.href} className="body-text text-[#c9d4ff] hover:text-white transition-colors block">
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Categories */}
+            <div>
+              <h3 className="subheading text-lg mb-4">Categories</h3>
+              <nav className="space-y-3">
+                {[
+                  {href: "/categories/impact-stories", label: "Impact Stories"},
+                  {href: "/categories/stem-innovations", label: "STEM Innovations"},
+                  {href: "/categories/career-empowerment", label: "Career & Empowerment"},
+                  {href: "/categories/education-learning", label: "Education & Learning"},
+                ].map((link) => (
+                  <a key={link.label} href={link.href} className="body-text text-[#c9d4ff] hover:text-white transition-colors block">
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Community & Support */}
+            <div>
+              <h3 className="subheading text-lg mb-4">Community</h3>
+              <nav className="space-y-3">
+                {[
+                  {href: "/community", label: "Join Community"},
+                  {href: "/contact", label: "Contact Us"},
+                  {href: "/articles/write", label: "Write Article"},
+                  {href: "/opportunities", label: "Submit Opportunity"},
+                ].map((link) => (
+                  <a key={link.label} href={link.href} className="body-text text-[#c9d4ff] hover:text-white transition-colors block">
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
             </div>
           </div>
+
           <div className="section-separator my-8" />
-          <div className="body-text text-center text-[#b9c6ef]">© 2025 Her Impact. All Rights Reserved.</div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="body-text text-[#b9c6ef]">© 2025 Her Impact. All Rights Reserved.</div>
+            <div className="flex items-center gap-6 text-sm text-[#b9c6ef]">
+              <a href="/contact" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="/contact" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="/contact" className="hover:text-white transition-colors">Cookie Policy</a>
+            </div>
+          </div>
         </div>
       </footer>
     </main>

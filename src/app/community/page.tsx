@@ -37,7 +37,7 @@ export default function CommunityPage() {
       id: "heritech",
       name: "HeriTech",
       description: "Empowering women in technology through mentorship, networking, and career development programs.",
-      website: "https://heritech.org",
+      website: "https://herintech.org",
       focus: ["Technology", "Mentorship", "Career Development"],
       members: "15,000+",
       founded: "2018",

@@ -30,7 +30,11 @@ import {
   Plus,
   Eye,
   MessageSquare,
-  ThumbsUp
+  ThumbsUp,
+  Twitter,
+  Linkedin,
+  Facebook,
+  Mail
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
