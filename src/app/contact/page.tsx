@@ -150,19 +150,33 @@ export default function ContactPage() {
     <main className="min-h-screen bg-[#0a0f1f] text-white">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-[rgba(6,10,22,0.6)] backdrop-blur-md border-b border-white/10">
-        <div className="container-page py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white">
-              <ArrowLeft size={20} />
-              Back to Home
+        <div className="container-page h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-white">
+            <img src="/logo.svg" alt="Her Impact Logo" className="w-6 h-6" />
+            <span className="subheading">Her Impact</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-white/80">
+            <Link href="/" className="hover:text-white flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Home
             </Link>
-            <div className="flex items-center gap-4">
-              <button className="btn btn-primary btn-glow bg-gradient-to-r from-[#79a1ff] to-[#f48fb1] text-white flex items-center gap-2">
-                <MessageCircle size={18} />
-                Join Community
-              </button>
-            </div>
-          </div>
+            <Link href="/articles" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Articles
+            </Link>
+            <Link href="/stories" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Stories
+            </Link>
+            <Link href="/community" className="hover:text-white flex items-center gap-2">
+              <Users size={16} />
+              Community
+            </Link>
+            <Link href="/opportunities" className="hover:text-white flex items-center gap-2">
+              <Target size={16} />
+              Opportunities
+            </Link>
+          </nav>
         </div>
       </header>
 

@@ -71,52 +71,57 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
     }
   ]);
 
-  // Mock article data - in a real app, this would come from an API
-  const article: ArticleData = {
+  // Mock story data - in a real app, this would come from an API
+  const story: ArticleData = {
     id: params.id,
-    title: "AI with Empathy: How Dr. Sarah Chen is Revolutionizing Healthcare",
+    title: "My Journey: From Fear to AI Pioneer",
     content: `
-      <p>In the rapidly evolving landscape of artificial intelligence, few researchers have made as profound an impact on healthcare as Dr. Sarah Chen. Her groundbreaking work in empathetic AI is not just transforming how we approach medical diagnosis and treatment—it's redefining what it means to care for patients in the digital age.</p>
+      <p>I never thought I'd become a tech leader. Growing up, I was always the quiet one in the back of the classroom, afraid to raise my hand even when I knew the answer. The idea of leading a research team seemed impossible to me.</p>
 
-      <h2>The Vision Behind Empathetic AI</h2>
-      <p>Dr. Chen's journey began with a simple yet revolutionary question: "What if AI could not only diagnose diseases but also understand and respond to the emotional needs of patients?" This question led to the development of her pioneering empathetic AI system, which combines advanced machine learning algorithms with sophisticated natural language processing to create AI that truly understands human emotions.</p>
+      <h2>The Day Everything Changed</h2>
+      <p>It was my third year of medical school when I had my first panic attack. I was sitting in a lecture about AI applications in healthcare, surrounded by confident male classmates who seemed to understand everything instantly. I felt like an impostor, like I didn't belong there.</p>
 
-      <p>"The traditional approach to AI in healthcare has been purely clinical," Dr. Chen explains. "We've been so focused on accuracy and efficiency that we've forgotten the human element. But healthcare isn't just about treating diseases—it's about caring for people."</p>
+      <p>But something clicked that day. As the professor explained how AI could revolutionize patient care, I realized something: I wasn't just interested in medicine—I was fascinated by the technology that could make it better. The fear I felt wasn't about not belonging; it was about stepping into something completely new.</p>
 
-      <h2>Technical Innovation Meets Human Compassion</h2>
-      <p>Dr. Chen's system uses a multi-layered approach that goes far beyond simple pattern recognition. The AI analyzes not just medical data, but also patient communication patterns, emotional indicators, and contextual factors to provide truly personalized care recommendations.</p>
+      <h2>Learning to Code at 25</h2>
+      <p>I started learning to code in my spare time, hiding my laptop under my medical textbooks. My classmates thought I was crazy—why would a future doctor need to know programming? But I couldn't shake the feeling that this was where I was meant to be.</p>
 
-      <p>The technology has already shown remarkable results in clinical trials. Patients interacting with Dr. Chen's empathetic AI system report:</p>
-      <ul>
-        <li>40% higher satisfaction rates compared to traditional AI systems</li>
-        <li>Significantly reduced anxiety during medical consultations</li>
-        <li>Better adherence to treatment plans</li>
-        <li>Improved overall healthcare experience</li>
-      </ul>
+      <p>Those first months were brutal. I spent countless nights staring at error messages, feeling stupid and inadequate. But every small breakthrough—every program that finally ran—felt like a victory. I was learning to think differently, to solve problems in ways I never imagined.</p>
 
-      <h2>Breaking Barriers in a Male-Dominated Field</h2>
-      <p>Dr. Chen's success hasn't come without challenges. As a woman in the male-dominated field of AI research, she has faced numerous obstacles and biases. "Early in my career, I was often the only woman in the room," she recalls. "There were times when my ideas were dismissed or attributed to male colleagues. But I learned to use these experiences as fuel for my determination."</p>
+      <h2>The Impostor Syndrome Battle</h2>
+      <p>Even after switching to computer science, the fear didn't disappear. I was constantly comparing myself to my classmates who had been coding since high school. I felt like I was always playing catch-up, like I was somehow less qualified because my journey was different.</p>
 
-      <p>Her advice to other women in STEM is both practical and inspiring: "Don't let anyone tell you that your perspective isn't valuable. The unique insights that women bring to technology are exactly what the field needs. We see problems differently, we approach solutions differently, and that diversity of thought is what drives innovation."</p>
+      <p>It took me years to realize that my medical background wasn't a disadvantage—it was my superpower. While others were focused on the technical aspects, I understood the human side of healthcare. I could see problems that others missed because I had been in those hospital rooms, talking to patients, understanding their fears and frustrations.</p>
 
-      <h2>The Future of Healthcare AI</h2>
-      <p>Looking ahead, Dr. Chen envisions a future where AI systems work seamlessly with healthcare providers to deliver truly personalized, compassionate care. Her research is now expanding into areas like mental health support, chronic disease management, and preventive care.</p>
+      <h2>Building My First AI System</h2>
+      <p>My breakthrough came during my PhD research. I was working on an AI system for medical diagnosis, but something felt wrong. The system was technically sound, but it felt cold, clinical. It could identify diseases but couldn't understand the emotional impact on patients.</p>
 
-      <p>"We're just scratching the surface of what's possible," she says. "Imagine a world where every patient has access to an AI system that not only understands their medical history but also their emotional state, their fears, their hopes. That's the future we're building."</p>
+      <p>That's when I had my "aha" moment. What if AI could not just diagnose, but also empathize? What if it could understand not just the medical data, but the human experience behind it?</p>
 
-      <h2>Impact and Recognition</h2>
-      <p>Dr. Chen's work has earned her numerous accolades, including the prestigious IEEE Women in Engineering Award and recognition as one of MIT Technology Review's Innovators Under 35. But for her, the greatest reward is seeing the real-world impact of her research.</p>
+      <p>I spent months developing what I called "empathetic AI"—a system that could analyze not just medical symptoms, but emotional indicators, patient communication patterns, and contextual factors. It was revolutionary, but more importantly, it felt right.</p>
 
-      <p>"When I hear from patients who say that our AI system made them feel heard and understood, that's when I know we're on the right track," she reflects. "Technology should enhance human connection, not replace it."</p>
+      <h2>The Challenges of Being Different</h2>
+      <p>Being a woman in AI research wasn't easy. I was often the only woman in the room, and I faced constant doubts about my abilities. There were times when my ideas were dismissed or attributed to male colleagues. There were moments when I questioned whether I belonged in this field at all.</p>
 
-      <p>As we look to the future of healthcare, Dr. Sarah Chen's work reminds us that the most powerful technology is that which serves humanity with both intelligence and compassion. Her vision of empathetic AI is not just transforming healthcare—it's showing us what's possible when we combine cutting-edge technology with the timeless values of empathy and understanding.</p>
+      <p>But I learned to use these experiences as fuel. Every time someone underestimated me, I worked harder. Every time my ideas were overlooked, I found new ways to make them heard. I realized that my unique perspective—my combination of medical knowledge and technical skills—was exactly what the field needed.</p>
+
+      <h2>Leading with Empathy</h2>
+      <p>Today, I lead a research team of 15 brilliant minds, and I've learned that the best leaders are those who understand both technology and humanity. My team isn't just building AI systems; we're creating technology that serves people, that understands their needs, their fears, their hopes.</p>
+
+      <p>When I interview new team members, I don't just look at their technical skills. I look for empathy, for the ability to understand the human impact of what we're building. Because the most powerful technology isn't just smart—it's wise, compassionate, and truly human-centered.</p>
+
+      <h2>My Message to Other Women</h2>
+      <p>If you're reading this and feeling like you don't belong in tech, I want you to know: your unique perspective is exactly what this field needs. Don't let anyone tell you that your background is a disadvantage. The challenges you've faced, the experiences you've had—they're not obstacles, they're superpowers.</p>
+
+      <p>It's okay to be afraid. It's okay to feel like an impostor. But don't let those feelings stop you from pursuing what you're passionate about. The world needs more women in tech, not just because it's the right thing to do, but because we bring something essential to the table: the ability to see technology through a human lens.</p>
+
+      <p>My journey from a scared medical student to an AI research director wasn't easy, but it was worth every moment of doubt, every late night of coding, every time I had to prove myself. Because now I get to build technology that truly serves humanity—and that's the greatest privilege of all.</p>
     `,
     author: "Dr. Sarah Chen",
-    authorBio: "Dr. Sarah Chen is a leading researcher in empathetic AI and healthcare technology. She holds a Ph.D. in Computer Science from Stanford University and has published over 50 papers on AI applications in healthcare. She is currently the Director of AI Research at MedTech Innovations and a visiting professor at MIT.",
+    authorBio: "Former medical student who discovered her passion for technology during a difficult period in her life. Now leads AI research focused on empathetic healthcare solutions.",
     authorImage: "/file.svg",
     date: "March 30, 2024",
     readTime: "8 min read",
-    category: "stem-innovations",
     image: "/file.svg",
     featured: true,
     likes: 1247,
@@ -132,7 +137,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
   const handleShare = async (platform: string) => {
     const url = window.location.href;
-    const title = article.title;
+    const title = story.title;
     
     switch (platform) {
       case 'twitter':
@@ -191,38 +196,33 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
         <div className="hero-aura" aria-hidden />
         <div className="relative container-page">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center">
-                <Heart size={16} className="text-white" />
-              </div>
-              <span className="text-sm text-white/60">STEM Innovations</span>
-            </div>
+            {/* Category removed - stories are personal narratives */}
             
             <h1 className="section-title text-4xl md:text-5xl mb-6 leading-tight">
-              {article.title}
+              {story.title}
             </h1>
             
             <div className="flex flex-wrap items-center gap-6 mb-8 text-white/60">
               <div className="flex items-center gap-2">
                 <User size={16} />
-                {article.author}
+                {story.author}
               </div>
               <div className="flex items-center gap-2">
                 <CalendarIcon size={16} />
-                {article.date}
+                {story.date}
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={16} />
-                {article.readTime}
+                {story.readTime}
               </div>
               <div className="flex items-center gap-2">
                 <Eye size={16} />
-                {article.views.toLocaleString()} views
+                {story.views.toLocaleString()} views
               </div>
             </div>
 
             <div className="flex flex-wrap gap-2 mb-8">
-              {article.tags.map((tag, index) => (
+              {story.tags.map((tag, index) => (
                 <span key={index} className="px-3 py-1 bg-white/10 rounded-full text-sm text-white/80">
                   #{tag}
                 </span>
@@ -232,21 +232,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
         </div>
       </section>
 
-      {/* Article Image */}
-      <section className="bg-[#070b16] py-8">
-        <div className="container-page">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative h-96 rounded-2xl overflow-hidden">
-              <Image 
-                src={article.image} 
-                alt={article.title}
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Story image removed - focusing on personal narratives */}
 
       {/* Article Content */}
       <section className="bg-[#070b16] py-20">
@@ -257,7 +243,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
               <div className="xl:col-span-3">
                 <div 
                   className="prose prose-lg prose-invert max-w-none prose-headings:text-white prose-p:text-white/90 prose-strong:text-white prose-ul:text-white/90 prose-li:text-white/90"
-                  dangerouslySetInnerHTML={{ __html: article.content }}
+                  dangerouslySetInnerHTML={{ __html: story.content }}
                 />
               </div>
 
@@ -267,19 +253,25 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
                   {/* Enhanced Author Card */}
                   <div className="card-glow p-8">
                     <div className="flex items-start gap-4 mb-6">
-                      <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center flex-shrink-0">
-                        <User size={24} className="text-white" />
+                      <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                        <Image 
+                          src={story.authorImage || "/file.svg"} 
+                          alt={story.author} 
+                          width={64} 
+                          height={64} 
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1">
-                        <h3 className="subheading text-xl mb-1">{article.author}</h3>
+                        <h3 className="subheading text-xl mb-1">{story.author}</h3>
                         <p className="text-sm text-white/60 mb-2">Author & Researcher</p>
                         <div className="flex items-center gap-2 text-xs text-white/50">
                           <CalendarIcon size={12} />
-                          <span>Published {article.date}</span>
+                          <span>Published {story.date}</span>
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-white/80 mb-6 leading-relaxed">{article.authorBio}</p>
+                    <p className="text-sm text-white/80 mb-6 leading-relaxed">{story.authorBio}</p>
                     <div className="flex gap-3">
                       <button className="flex-1 btn btn-primary btn-glow bg-white text-[#0b3d91] text-sm">
                         Follow Author
@@ -292,7 +284,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
                   {/* Enhanced Social Actions */}
                   <div className="card-glow p-8">
-                    <h3 className="subheading text-xl mb-6">Share this article</h3>
+                    <h3 className="subheading text-xl mb-6">Share this story</h3>
                     <div className="space-y-4">
                       <button
                         onClick={handleLike}
@@ -347,14 +339,14 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
 
                   {/* Enhanced Article Stats */}
                   <div className="card-glow p-8">
-                    <h3 className="subheading text-xl mb-6">Article Performance</h3>
+                    <h3 className="subheading text-xl mb-6">Story Performance</h3>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                         <div className="flex items-center gap-3">
                           <Eye size={18} className="text-blue-400" />
                           <span className="text-white/80">Views</span>
                         </div>
-                        <span className="text-white font-semibold">{article.views.toLocaleString()}</span>
+                        <span className="text-white font-semibold">{story.views.toLocaleString()}</span>
                       </div>
                       <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                         <div className="flex items-center gap-3">
@@ -375,14 +367,14 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
                           <Clock size={18} className="text-purple-400" />
                           <span className="text-white/80">Read Time</span>
                         </div>
-                        <span className="text-white font-semibold">{article.readTime}</span>
+                        <span className="text-white font-semibold">{story.readTime}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Related Articles */}
                   <div className="card-glow p-8">
-                    <h3 className="subheading text-xl mb-6">Related Articles</h3>
+                    <h3 className="subheading text-xl mb-6">Related Stories</h3>
                     <div className="space-y-4">
                       <div className="p-4 rounded-lg bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
                         <h4 className="text-white font-medium mb-2">Women Leading AI Innovation</h4>
@@ -409,7 +401,7 @@ export default function ArticlePage({ params }: { params: { id: string } }) {
       <section className="bg-[#0a0f1f] py-20">
         <div className="container-page">
           <div className="max-w-7xl mx-auto">
-            <h2 className="section-title text-3xl mb-8">Comments ({comments.length})</h2>
+            <h2 className="section-title text-3xl mb-8">Story Comments ({comments.length})</h2>
             
             {/* Add Comment */}
             <div className="card-glow p-6 mb-8">

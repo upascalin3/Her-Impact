@@ -17,7 +17,11 @@ import {
   Grid3X3,
   TrendingUp,
   Star,
-  Tag
+  Tag,
+  ArrowLeft,
+  Users,
+  Target,
+  Mail
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -636,10 +640,28 @@ export default function ArticlesPage() {
             <img src="/logo.svg" alt="Her Impact Logo" className="w-6 h-6" />
             <span className="subheading">Her Impact</span>
           </Link>
-          <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white">
-            <BookOpen size={16} />
-            Back to Home
-          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-white/80">
+            <Link href="/" className="hover:text-white flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Home
+            </Link>
+            <Link href="/stories" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Stories
+            </Link>
+            <Link href="/community" className="hover:text-white flex items-center gap-2">
+              <Users size={16} />
+              Community
+            </Link>
+            <Link href="/opportunities" className="hover:text-white flex items-center gap-2">
+              <Target size={16} />
+              Opportunities
+            </Link>
+            <Link href="/contact" className="pill flex items-center gap-2">
+              <Mail size={16} />
+              Contact
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -868,8 +890,9 @@ export default function ArticlesPage() {
                       </div>
                       <Link 
                         href={`/articles/${article.id}`}
-                        className="btn btn-primary btn-glow bg-white text-[#0b3d91] text-sm"
+                        className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2 hover:scale-105 transition-transform"
                       >
+                        <BookOpen size={16} />
                         Read More
                       </Link>
                     </div>

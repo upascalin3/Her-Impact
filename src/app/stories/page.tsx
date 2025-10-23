@@ -32,15 +32,20 @@ import {
   Twitter,
   Linkedin,
   Facebook,
-  Copy
+  Copy,
+  Users,
+  Target,
+  Mail
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function AllStoriesPage() {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  // Category filtering removed - all stories are now personal narratives
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("latest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const storiesPerPage = 6;
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [likedStories, setLikedStories] = useState<Set<string>>(new Set());
   const [storyLikes, setStoryLikes] = useState<Record<string, number>>({});
@@ -50,79 +55,79 @@ export default function AllStoriesPage() {
     excerpt: "",
     content: "",
     author: "",
-    category: "",
+    bio: "",
     tags: "",
-    email: ""
+    email: "",
+    authorImage: ""
   });
+  const [isUploadingAuthorImage, setIsUploadingAuthorImage] = useState(false);
 
-  const categories = [
-    { id: "all", name: "All Stories", icon: BookOpen },
-    { id: "impact-stories", name: "Impact Stories", icon: Heart },
-    { id: "stem-innovations", name: "STEM Innovations", icon: Lightbulb },
-    { id: "career-empowerment", name: "Career & Empowerment", icon: TrendingUp },
-    { id: "education-learning", name: "Education & Learning", icon: GraduationCap },
-    { id: "community-collaboration", name: "Community & Collaboration", icon: Users2 },
-    { id: "research-insights", name: "Research & Insights", icon: BookOpenCheck },
-    { id: "voices-perspectives", name: "Voices & Perspectives", icon: MessageSquare },
-    { id: "events-opportunities", name: "Events & Opportunities", icon: Calendar },
-    { id: "womens-history", name: "Women's History", icon: History }
-  ];
+  // Categories removed - stories are now uncategorized personal narratives
 
   const stories = [
     {
-      id: "ai-empathy-dr-sarah-chen",
-      title: "AI with Empathy: How Dr. Sarah Chen is Revolutionizing Healthcare",
-      excerpt: "Dr. Sarah Chen's groundbreaking work in empathetic AI is transforming patient care and medical diagnosis.",
+      id: "my-journey-from-fear-to-ai-pioneer",
+      title: "My Journey: From Fear to AI Pioneer",
+      excerpt: "I never thought I'd become a tech leader. Here's how I overcame imposter syndrome and built confidence in a male-dominated field.",
       author: "Dr. Sarah Chen",
+      authorBio: "Former medical student who discovered her passion for technology during a difficult period in her life. Now leads AI research focused on empathetic healthcare solutions.",
+      authorImage: "/file.svg",
       date: "March 30, 2024",
-      category: "stem-innovations",
       readTime: "8 min read",
-      image: "/file.svg",
       featured: true,
       likes: 1247,
       comments: 89,
       views: 15420,
-      tags: ["AI", "Healthcare", "Innovation"]
+      tags: ["Personal Journey", "Overcoming Fear", "AI"],
+      experience: "Overcoming imposter syndrome in tech",
+      challenge: "Feeling inadequate in male-dominated spaces",
+      outcome: "Built a successful AI research team"
     },
     {
-      id: "from-refugee-to-robotics-pioneer",
-      title: "From Refugee to Robotics Pioneer: Elena's Journey",
-      excerpt: "How one woman's journey from displacement to leading AI research is changing the world.",
+      id: "from-refugee-camp-to-robotics-lab",
+      title: "From Refugee Camp to Robotics Lab",
+      excerpt: "My family fled war when I was 12. Today, I lead robotics research that helps other displaced people. This is my story of resilience.",
       author: "Elena Rodriguez",
+      authorBio: "Refugee turned robotics engineer, passionate about using technology to help displaced communities. Currently leading humanitarian robotics projects.",
+      authorImage: "/file.svg",
       date: "March 28, 2024",
-      category: "impact-stories",
       readTime: "12 min read",
-      image: "/file.svg",
       featured: false,
       likes: 892,
       comments: 67,
       views: 12840,
-      tags: ["Robotics", "Refugee", "Humanitarian"]
+      tags: ["Resilience", "Refugee Experience", "Robotics"],
+      experience: "Rebuilding life after displacement",
+      challenge: "Language barriers and cultural adaptation",
+      outcome: "Leading humanitarian robotics projects"
     },
     {
-      id: "breaking-glass-ceiling-aerospace",
-      title: "Breaking the Glass Ceiling in Aerospace",
-      excerpt: "Captain Maria Rodriguez becomes the first Latina to lead a major space mission.",
+      id: "the-day-i-became-first-latina-astronaut",
+      title: "The Day I Became the First Latina Astronaut",
+      excerpt: "Growing up in a small town, I never imagined I'd go to space. Here's how I defied expectations and reached for the stars.",
       author: "Captain Maria Rodriguez",
+      authorBio: "First Latina to command a space mission, breaking barriers in aerospace. Currently inspiring the next generation of astronauts.",
+      authorImage: "/file.svg",
       date: "March 25, 2024",
-      category: "impact-stories",
       readTime: "10 min read",
-      image: "/file.svg",
       featured: true,
       likes: 1156,
       comments: 94,
       views: 18920,
-      tags: ["Aerospace", "Leadership", "Space"]
+      tags: ["Space", "Breaking Barriers", "Leadership"],
+      experience: "Making history in space exploration",
+      challenge: "Proving myself in a field with no role models",
+      outcome: "Inspiring the next generation of astronauts"
     },
     {
       id: "coding-change-rural-india",
       title: "Coding for Change in Rural India",
       excerpt: "How one programmer is using technology to bridge the digital divide in her community.",
       author: "Priya Sharma",
+      authorBio: "Computer science graduate who returned to her village to bridge the digital divide. Created a thriving tech community in rural areas.",
+      authorImage: "/file.svg",
       date: "March 22, 2024",
-      category: "community-collaboration",
       readTime: "7 min read",
-      image: "/file.svg",
       featured: false,
       likes: 634,
       comments: 45,
@@ -134,10 +139,10 @@ export default function AllStoriesPage() {
       title: "Negotiating Your First Tech Salary: A Complete Guide",
       excerpt: "A comprehensive guide to salary negotiation strategies specifically for women in tech.",
       author: "Sarah Johnson",
+      authorBio: "Software engineer who learned the hard way about salary negotiation and now helps other women. Currently earning 40% more and helping others.",
+      authorImage: "/file.svg",
       date: "March 20, 2024",
-      category: "career-empowerment",
       readTime: "15 min read",
-      image: "/file.svg",
       featured: false,
       likes: 743,
       comments: 52,
@@ -149,10 +154,10 @@ export default function AllStoriesPage() {
       title: "Building Your Personal Brand in STEM",
       excerpt: "How to establish yourself as a thought leader and advance your career through strategic branding.",
       author: "Dr. Maria Santos",
+      authorBio: "Experienced researcher who openly shares her struggles with imposter syndrome. Developed strategies to manage self-doubt and now helps others.",
+      authorImage: "/file.svg",
       date: "March 18, 2024",
-      category: "career-empowerment",
       readTime: "9 min read",
-      image: "/file.svg",
       featured: false,
       likes: 567,
       comments: 38,
@@ -164,10 +169,10 @@ export default function AllStoriesPage() {
       title: "Introduction to Machine Learning for Beginners",
       excerpt: "A beginner-friendly course covering the fundamentals of machine learning and AI.",
       author: "Dr. Anna Kim",
+      authorBio: "ML researcher who found her place in tech through embracing her unique background. Realized her unique perspective was valuable.",
+      authorImage: "/file.svg",
       date: "March 15, 2024",
-      category: "education-learning",
       readTime: "20 min read",
-      image: "/file.svg",
       featured: false,
       likes: 445,
       comments: 29,
@@ -179,10 +184,10 @@ export default function AllStoriesPage() {
       title: "Ada Lovelace: The First Computer Programmer",
       excerpt: "The remarkable story of Ada Lovelace and her contributions to early computing.",
       author: "Historical Research Team",
+      authorBio: "Developer inspired by her grandmother's late-in-life coding journey. Inspired to pursue computer science by an unexpected teacher.",
+      authorImage: "/file.svg",
       date: "March 12, 2024",
-      category: "womens-history",
       readTime: "11 min read",
-      image: "/file.svg",
       featured: false,
       likes: 789,
       comments: 56,
@@ -194,10 +199,10 @@ export default function AllStoriesPage() {
       title: "Quantum Computing Breakthrough: Dr. Amara Patel's Discovery",
       excerpt: "New quantum algorithms that could solve complex problems in seconds instead of years.",
       author: "Dr. Amara Patel",
+      authorBio: "Quantum researcher whose biggest failure became her greatest success. Discovered revolutionary quantum algorithms through embracing failure.",
+      authorImage: "/file.svg",
       date: "March 10, 2024",
-      category: "stem-innovations",
       readTime: "14 min read",
-      image: "/file.svg",
       featured: true,
       likes: 923,
       comments: 71,
@@ -210,9 +215,7 @@ export default function AllStoriesPage() {
       excerpt: "Innovative solar panel technology that increases efficiency by 40% while reducing costs.",
       author: "Dr. Sofia Martinez",
       date: "March 8, 2024",
-      category: "stem-innovations",
       readTime: "13 min read",
-      image: "/file.svg",
       featured: false,
       likes: 678,
       comments: 43,
@@ -227,7 +230,6 @@ export default function AllStoriesPage() {
       date: "March 5, 2024",
       category: "research-insights",
       readTime: "16 min read",
-      image: "/file.svg",
       featured: false,
       likes: 512,
       comments: 34,
@@ -242,7 +244,6 @@ export default function AllStoriesPage() {
       date: "March 3, 2024",
       category: "events-opportunities",
       readTime: "6 min read",
-      image: "/file.svg",
       featured: false,
       likes: 389,
       comments: 28,
@@ -252,11 +253,12 @@ export default function AllStoriesPage() {
   ];
 
   const filteredStories = stories.filter(story => {
-    const matchesCategory = selectedCategory === "all" || story.category === selectedCategory;
     const matchesSearch = story.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          story.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         story.author.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
+                         story.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (story.authorBio || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         story.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesSearch;
   });
 
   const sortedStories = [...filteredStories].sort((a, b) => {
@@ -269,6 +271,17 @@ export default function AllStoriesPage() {
     }
     return 0;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(sortedStories.length / storiesPerPage);
+  const startIndex = (currentPage - 1) * storiesPerPage;
+  const endIndex = startIndex + storiesPerPage;
+  const paginatedStories = sortedStories.slice(startIndex, endIndex);
+
+  // Reset to first page when search or sort changes
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, sortBy]);
 
   const handleLike = (storyId: string) => {
     setLikedStories(prev => {
@@ -308,6 +321,25 @@ export default function AllStoriesPage() {
     setShowShareMenu(null);
   };
 
+  const handleAuthorImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAuthorImage(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setSubmissionForm(prev => ({ ...prev, authorImage: result }));
+        setIsUploadingAuthorImage(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading author image:', error);
+      setIsUploadingAuthorImage(false);
+    }
+  };
+
   const handleSubmitStory = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would submit to an API
@@ -318,9 +350,10 @@ export default function AllStoriesPage() {
       excerpt: "",
       content: "",
       author: "",
-      category: "",
+      bio: "",
       tags: "",
-      email: ""
+      email: "",
+      authorImage: ""
     });
   };
 
@@ -330,13 +363,31 @@ export default function AllStoriesPage() {
       <header className="sticky top-0 z-30 bg-[rgba(6,10,22,0.6)] backdrop-blur-md border-b border-white/10">
         <div className="container-page h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-white">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1]" />
+            <img src="/logo.svg" alt="Her Impact Logo" className="w-6 h-6" />
             <span className="subheading">Her Impact</span>
           </Link>
-          <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white">
-            <ArrowLeft size={16} />
-            Back to Home
-          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-white/80">
+            <Link href="/" className="hover:text-white flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Home
+            </Link>
+            <Link href="/articles" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Articles
+            </Link>
+            <Link href="/community" className="hover:text-white flex items-center gap-2">
+              <Users size={16} />
+              Community
+            </Link>
+            <Link href="/opportunities" className="hover:text-white flex items-center gap-2">
+              <Target size={16} />
+              Opportunities
+            </Link>
+            <Link href="/contact" className="pill flex items-center gap-2">
+              <Mail size={16} />
+              Contact
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -350,7 +401,7 @@ export default function AllStoriesPage() {
             </div>
             <div>
               <div className="pill w-max">All Stories</div>
-              <h1 className="section-title text-4xl md:text-5xl">Discover Inspiring Stories</h1>
+              <h1 className="section-title text-4xl md:text-5xl mt-4">Discover Inspiring Stories</h1>
             </div>
           </div>
           <p className="body-text text-[#c9d4ff] text-lg max-w-3xl mb-8">
@@ -376,23 +427,7 @@ export default function AllStoriesPage() {
               />
             </div>
 
-            {/* Category Filter */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
-                    selectedCategory === category.id
-                      ? "bg-white text-[#0b3d91]"
-                      : "bg-white/5 text-white/80 hover:bg-white/10"
-                  }`}
-                >
-                  <category.icon size={16} />
-                  {category.name}
-                </button>
-              ))}
-            </div>
+            {/* Category filter removed - stories are personal narratives */}
 
             {/* Sort */}
             <div className="relative">
@@ -416,11 +451,16 @@ export default function AllStoriesPage() {
         <div className="container-page">
           <div className="flex items-center justify-between mb-8">
             <h2 className="section-title text-3xl">
-              {selectedCategory === "all" ? "All Stories" : categories.find(c => c.id === selectedCategory)?.name}
+              Personal Stories
             </h2>
             <div className="flex items-center gap-4">
               <div className="text-white/60">
                 {filteredStories.length} {filteredStories.length === 1 ? 'story' : 'stories'} found
+                {totalPages > 1 && (
+                  <span className="ml-2">
+                    (Page {currentPage} of {totalPages})
+                  </span>
+                )}
               </div>
               <button
                 onClick={() => setShowSubmitForm(true)}
@@ -433,116 +473,91 @@ export default function AllStoriesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedStories.map((story, i) => (
-              <article key={story.id} className="card-glow p-6 reveal group interactive-hover">
+            {paginatedStories.map((story, i) => (
+              <article key={story.id} className="card-glow p-6 reveal group interactive-hover relative">
                 {story.featured && (
                   <div className="absolute -top-2 -right-2 bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] text-white text-xs px-2 py-1 rounded-full pulse-glow">
                     <Star size={12} className="inline mr-1" />
                     Featured
                   </div>
                 )}
-                <div className="relative h-48 bg-gradient-to-tr from-[#f48fb1]/40 to-[#79a1ff]/30 rounded-xl mb-4 overflow-hidden">
-                  <Image 
-                    src={story.image} 
-                    alt={story.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  
-                  {/* Floating vector elements */}
-                  <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-white/20 float-animation"></div>
-                  <div className="absolute bottom-4 left-4 w-2 h-2 rounded-full bg-white/30 float-animation" style={{animationDelay: '1s'}}></div>
-                  <div className="absolute top-1/2 right-2 w-1 h-1 rounded-full bg-white/40 float-animation" style={{animationDelay: '2s'}}></div>
-                </div>
-                
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] flex items-center justify-center">
-                    {React.createElement(categories.find(c => c.id === story.category)?.icon || BookOpen, { size: 12, className: "text-white" })}
+
+                {/* Author Info Header */}
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                    <Image 
+                      src={story.authorImage || "/file.svg"} 
+                      alt={story.author} 
+                      width={48} 
+                      height={48} 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <span className="text-sm text-white/60">
-                    {categories.find(c => c.id === story.category)?.name}
-                  </span>
+                  <div className="flex-1">
+                    <h3 className="subheading text-lg mb-1">{story.author}</h3>
+                    <p className="text-sm text-white/60 mb-2 line-clamp-2">{story.authorBio}</p>
+                    <div className="flex items-center gap-2 text-xs text-white/50">
+                      <CalendarIcon size={12} />
+                      {story.date}
+                    </div>
+                  </div>
                 </div>
 
-                <h3 className="subheading text-xl mb-2 group-hover:text-white/90 transition-colors">
+                <h3 className="subheading text-xl mb-3 group-hover:text-white/90 transition-colors line-clamp-2">
                   {story.title}
                 </h3>
                 <p className="body-text text-white/70 mb-4 line-clamp-3">
                   {story.excerpt}
                 </p>
 
-                <div className="flex items-center gap-4 text-sm text-white/60 mb-4">
-                  <div className="flex items-center gap-1">
-                    <User size={14} />
-                    {story.author}
+                {/* Brief Experience Info */}
+                {story.experience && (
+                  <div className="mb-4 p-3 bg-white/5 rounded-lg border border-white/10">
+                    <div className="flex items-start gap-2">
+                      <div className="w-2 h-2 rounded-full bg-[#79a1ff] mt-2 flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <p className="text-xs text-white/50 mb-1 font-medium">Key Experience:</p>
+                        <p className="text-sm text-white/80 line-clamp-2">{story.experience}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <CalendarIcon size={14} />
-                    {story.date}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BookOpen size={14} />
-                    {story.readTime}
-                  </div>
-                </div>
+                )}
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <button
+                <div className="flex items-center justify-between mt-6">
+                  <div className="flex items-center gap-4 text-sm text-white/60">
+                    <button 
                       onClick={() => handleLike(story.id)}
-                      className={`flex items-center gap-1 transition-colors ${
-                        likedStories.has(story.id) ? 'text-red-400' : 'text-white/60 hover:text-red-400'
-                      }`}
+                      className="flex items-center gap-1 hover:text-[#79a1ff] transition-colors"
                     >
-                      <Heart size={16} className={likedStories.has(story.id) ? 'fill-current' : ''} />
-                      {(story.likes + (storyLikes[story.id] || 0)).toLocaleString()}
+                      <Heart 
+                        size={14} 
+                        className={storyLikes[story.id] ? "fill-[#79a1ff] text-[#79a1ff]" : ""} 
+                      />
+                      <span>{(story.likes + (storyLikes[story.id] || 0)).toLocaleString()}</span>
                     </button>
-                    <div className="flex items-center gap-1 text-white/60">
-                      <MessageSquare size={16} />
-                      {story.comments}
+                    <div className="flex items-center gap-1">
+                      <MessageSquare size={14} />
+                      <span>{story.comments}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-white/60">
-                      <Eye size={16} />
-                      {story.views.toLocaleString()}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="relative">
-                      <button
-                        onClick={() => setShowShareMenu(showShareMenu === story.id ? null : story.id)}
-                        className="p-2 rounded-lg bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors"
-                      >
-                        <Share2 size={16} />
-                      </button>
-                      {showShareMenu === story.id && (
-                        <div className="absolute top-full right-0 mt-2 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-lg p-2 space-y-1 z-50">
-                          <button onClick={() => handleShare(story.id, 'twitter')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5 text-left">
-                            <Twitter size={14} />
-                            Twitter
-                          </button>
-                          <button onClick={() => handleShare(story.id, 'linkedin')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5 text-left">
-                            <Linkedin size={14} />
-                            LinkedIn
-                          </button>
-                          <button onClick={() => handleShare(story.id, 'facebook')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5 text-left">
-                            <Facebook size={14} />
-                            Facebook
-                          </button>
-                          <button onClick={() => handleShare(story.id, 'copy')} className="w-full flex items-center gap-2 p-2 rounded hover:bg-white/5 text-left">
-                            <Copy size={14} />
-                            Copy Link
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <Link 
-                      href={`/stories/${story.id}`}
-                      className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2 hover:scale-105 transition-transform"
+                    <button 
+                      onClick={() => {
+                        const url = `${window.location.origin}/stories/${story.id}`;
+                        navigator.clipboard.writeText(url);
+                        // You could add a toast notification here
+                      }}
+                      className="flex items-center gap-1 hover:text-[#79a1ff] transition-colors"
                     >
-                      <BookOpen size={16} />
-                      Read More
-                    </Link>
+                      <Share2 size={14} />
+                    <span>Share</span>
+                    </button>
                   </div>
+                  <Link 
+                    href={`/stories/${story.id}`}
+                    className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2 hover:scale-105 transition-transform text-sm px-4 py-2"
+                  >
+                    <BookOpen size={16} />
+                    Read More
+                  </Link>
                 </div>
               </article>
             ))}
@@ -555,6 +570,62 @@ export default function AllStoriesPage() {
               </div>
               <h3 className="subheading text-xl mb-2">No stories found</h3>
               <p className="text-white/60">Try adjusting your search or filter criteria</p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {filteredStories.length > 0 && totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-12">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="btn btn-outline flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft size={16} />
+                Previous
+              </button>
+
+              <div className="flex items-center gap-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  const shouldShow = 
+                    page <= 3 || 
+                    page > totalPages - 3 || 
+                    Math.abs(page - currentPage) <= 1;
+                  
+                  if (!shouldShow) {
+                    if (page === 4 && currentPage > 5) {
+                      return <span key={page} className="text-white/40">...</span>;
+                    }
+                    if (page === totalPages - 3 && currentPage < totalPages - 4) {
+                      return <span key={page} className="text-white/40">...</span>;
+                    }
+                    return null;
+                  }
+
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+                        currentPage === page
+                          ? 'bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] text-white'
+                          : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="btn btn-outline flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+                <ArrowLeft size={16} className="rotate-180" />
+              </button>
             </div>
           )}
         </div>
@@ -644,33 +715,74 @@ export default function AllStoriesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-2">Category *</label>
-                  <select
-                    required
-                    value={submissionForm.category}
-                    onChange={(e) => setSubmissionForm(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:border-white/30"
-                  >
-                    <option value="" className="bg-[#0a0f1f]">Select a category</option>
-                    {categories.slice(1).map((category) => (
-                      <option key={category.id} value={category.id} className="bg-[#0a0f1f]">
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-2">Tags</label>
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Your Bio *</label>
+                <textarea
+                  required
+                  value={submissionForm.bio}
+                  onChange={(e) => setSubmissionForm(prev => ({ ...prev, bio: e.target.value }))}
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/60 focus:outline-none focus:border-white/30 resize-none"
+                  rows={3}
+                  placeholder="Tell us about yourself - your background, current role, and what makes your story unique..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Author Image (optional)</label>
+                <div className="mb-3">
+                  <label className="block text-xs text-white/60 mb-1">
+                    Or enter image URL:
+                  </label>
                   <input
-                    type="text"
-                    value={submissionForm.tags}
-                    onChange={(e) => setSubmissionForm(prev => ({ ...prev, tags: e.target.value }))}
+                    type="url"
+                    value={submissionForm.authorImage}
+                    onChange={(e) => setSubmissionForm(prev => ({ ...prev, authorImage: e.target.value }))}
+                    placeholder="https://example.com/your-photo.jpg"
                     className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/60 focus:outline-none focus:border-white/30"
-                    placeholder="AI, Innovation, Leadership (comma separated)"
                   />
                 </div>
+                <div>
+                  <label className="block text-xs text-white/60 mb-1">
+                    Or upload from computer:
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAuthorImageUpload}
+                    className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#79a1ff] file:text-white hover:file:bg-[#79a1ff]/80"
+                    disabled={isUploadingAuthorImage}
+                  />
+                  {isUploadingAuthorImage && (
+                    <p className="text-sm text-white/60 mt-2">Uploading author image...</p>
+                  )}
+                </div>
+                {submissionForm.authorImage && (
+                  <div className="mt-3">
+                    <label className="block text-xs text-white/60 mb-1">
+                      Preview:
+                    </label>
+                    <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-white/20">
+                      <Image 
+                        src={submissionForm.authorImage} 
+                        alt="Author preview" 
+                        width={80} 
+                        height={80} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-white/80 mb-2">Tags (optional)</label>
+                <input
+                  type="text"
+                  value={submissionForm.tags}
+                  onChange={(e) => setSubmissionForm(prev => ({ ...prev, tags: e.target.value }))}
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/60 focus:outline-none focus:border-white/30"
+                  placeholder="AI, Innovation, Leadership (comma separated)"
+                />
               </div>
 
               <div className="flex items-center gap-3 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">

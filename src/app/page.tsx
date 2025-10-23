@@ -232,24 +232,10 @@ export default function Home() {
           </div>
         )}
       </div>
-            <div className="relative group">
-              <a href="/stories" className="hover:text-white flex items-center gap-2">
-                <BookOpen size={16} />
-                Stories
-              </a>
-              <div className="absolute top-full left-0 mt-2 w-48 bg-[rgba(6,10,22,0.95)] backdrop-blur-md border border-white/10 rounded-xl shadow-2xl z-50 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="p-2">
-                  <a href="/stories" className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white/80 hover:text-white">
-                    <BookOpen size={16} />
-                    Featured Stories
-                  </a>
-                  <a href="/stories" className="flex items-center gap-2 p-2 rounded-lg hover:bg-white/5 text-white/80 hover:text-white">
-                    <BookOpen size={16} />
-                    All Stories
-                  </a>
-                </div>
-              </div>
-            </div>
+            <a href="/stories" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Stories
+            </a>
             <a href="/community" className="hover:text-white flex items-center gap-2">
               <Users size={16} />
               Community

@@ -34,7 +34,8 @@ import {
   Twitter,
   Linkedin,
   Facebook,
-  Mail
+  Mail,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -45,6 +46,26 @@ export default function OpportunitiesPage() {
   const [sortBy, setSortBy] = useState("latest");
   const [showShareMenu, setShowShareMenu] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const opportunitiesPerPage = 9;
+
+  // Submit opportunity form state
+  const [submitForm, setSubmitForm] = useState({
+    title: "",
+    organization: "",
+    description: "",
+    category: "",
+    type: "",
+    deadline: "",
+    location: "",
+    duration: "",
+    value: "",
+    requirements: "",
+    contactEmail: "",
+    website: ""
+  });
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
 
   const categories = [
     { id: "all", name: "All Opportunities", icon: Target },
@@ -263,6 +284,11 @@ export default function OpportunitiesPage() {
     }
   ];
 
+  // Pagination logic
+  const totalPages = Math.ceil(opportunities.length / opportunitiesPerPage);
+  const startIndex = (currentPage - 1) * opportunitiesPerPage;
+  const endIndex = startIndex + opportunitiesPerPage;
+
   const filteredOpportunities = opportunities.filter(opp => {
     const matchesCategory = selectedCategory === "all" || opp.category === selectedCategory;
     const matchesSearch = opp.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -281,6 +307,8 @@ export default function OpportunitiesPage() {
     }
     return 0;
   });
+
+  const paginatedOpportunities = sortedOpportunities.slice(startIndex, endIndex);
 
   const handleShare = (opportunityId: string, platform: string) => {
     const opportunity = opportunities.find(o => o.id === opportunityId);
@@ -330,19 +358,33 @@ export default function OpportunitiesPage() {
     <main className="min-h-screen bg-[#0a0f1f] text-white">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-[rgba(6,10,22,0.6)] backdrop-blur-md border-b border-white/10">
-        <div className="container-page py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white">
-              <ArrowLeft size={20} />
-              Back to Home
+        <div className="container-page h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-white">
+            <img src="/logo.svg" alt="Her Impact Logo" className="w-6 h-6" />
+            <span className="subheading">Her Impact</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-8 text-white/80">
+            <Link href="/" className="hover:text-white flex items-center gap-2">
+              <ArrowLeft size={16} />
+              Home
             </Link>
-            <div className="flex items-center gap-4">
-              <button className="btn btn-primary btn-glow bg-gradient-to-r from-[#79a1ff] to-[#f48fb1] text-white flex items-center gap-2">
-                <Plus size={18} />
-                Submit Opportunity
-              </button>
-            </div>
-          </div>
+            <Link href="/articles" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Articles
+            </Link>
+            <Link href="/stories" className="hover:text-white flex items-center gap-2">
+              <BookOpen size={16} />
+              Stories
+            </Link>
+            <Link href="/community" className="hover:text-white flex items-center gap-2">
+              <Users size={16} />
+              Community
+            </Link>
+            <Link href="/contact" className="pill flex items-center gap-2">
+              <Mail size={16} />
+              Contact
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -449,7 +491,7 @@ export default function OpportunitiesPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sortedOpportunities.map((opportunity, i) => (
+            {paginatedOpportunities.map((opportunity, i) => (
               <div key={opportunity.id} className="card-glow p-6 reveal group interactive-hover">
                 {opportunity.featured && (
                   <div className="absolute -top-2 -right-2 bg-gradient-to-tr from-[#79a1ff] to-[#f48fb1] text-white text-xs px-2 py-1 rounded-full pulse-glow">
@@ -503,10 +545,6 @@ export default function OpportunitiesPage() {
                       <Users size={14} />
                       {typeof opportunity.applications === 'number' ? opportunity.applications.toLocaleString() : opportunity.applications}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Target size={14} />
-                      {typeof opportunity.spots === 'number' ? opportunity.spots : opportunity.spots}
-                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="relative">
@@ -554,6 +592,43 @@ export default function OpportunitiesPage() {
             ))}
           </div>
 
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-12">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft size={16} />
+              </button>
+              
+              <div className="flex items-center gap-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-2 rounded-lg transition-colors ${
+                      currentPage === page
+                        ? 'bg-white text-[#0b3d91]'
+                        : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          )}
+
           {filteredOpportunities.length === 0 && (
             <div className="text-center py-20">
               <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6">
@@ -565,6 +640,120 @@ export default function OpportunitiesPage() {
           )}
         </div>
       </section>
+
+      {/* Submit Opportunity Modal */}
+      {showSubmitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-[#0a0f1f] border border-white/10 rounded-2xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="subheading text-2xl">Submit an Opportunity</h3>
+              <button 
+                onClick={() => setShowSubmitModal(false)}
+                className="p-2 rounded-lg bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const required = [submitForm.title, submitForm.organization, submitForm.description, submitForm.category, submitForm.type, submitForm.contactEmail];
+                if (required.some((v) => !v || v.trim() === "")) {
+                  setSubmitStatus("error");
+                  return;
+                }
+                setSubmitStatus("success");
+                setSubmitForm({ title: "", organization: "", description: "", category: "", type: "", deadline: "", location: "", duration: "", value: "", requirements: "", contactEmail: "", website: "" });
+                setTimeout(() => setShowSubmitModal(false), 2000);
+              }}
+              aria-label="Submit opportunity form"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="title" className="block text-sm text-white/70 mb-1">Opportunity Title *</label>
+                  <input id="title" required value={submitForm.title} onChange={(e) => setSubmitForm({ ...submitForm, title: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="e.g., Google Women Techmakers Scholarship" />
+                </div>
+                <div>
+                  <label htmlFor="organization" className="block text-sm text-white/70 mb-1">Organization *</label>
+                  <input id="organization" required value={submitForm.organization} onChange={(e) => setSubmitForm({ ...submitForm, organization: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="e.g., Google" />
+                </div>
+                <div>
+                  <label htmlFor="category" className="block text-sm text-white/70 mb-1">Category *</label>
+                  <select id="category" required value={submitForm.category} onChange={(e) => setSubmitForm({ ...submitForm, category: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white">
+                    <option value="" className="bg-[#0a0f1f]">Select Category</option>
+                    <option value="scholarships" className="bg-[#0a0f1f]">Scholarships</option>
+                    <option value="camps" className="bg-[#0a0f1f]">Camps & Workshops</option>
+                    <option value="universities" className="bg-[#0a0f1f]">Universities & Programs</option>
+                    <option value="jobs" className="bg-[#0a0f1f]">Jobs & Internships</option>
+                    <option value="lessons" className="bg-[#0a0f1f]">Lessons & Courses</option>
+                    <option value="events" className="bg-[#0a0f1f]">Events & Conferences</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="type" className="block text-sm text-white/70 mb-1">Type *</label>
+                  <select id="type" required value={submitForm.type} onChange={(e) => setSubmitForm({ ...submitForm, type: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white">
+                    <option value="" className="bg-[#0a0f1f]">Select Type</option>
+                    <option value="scholarship" className="bg-[#0a0f1f]">Scholarship</option>
+                    <option value="internship" className="bg-[#0a0f1f]">Internship</option>
+                    <option value="camp" className="bg-[#0a0f1f]">Camp</option>
+                    <option value="course" className="bg-[#0a0f1f]">Course</option>
+                    <option value="conference" className="bg-[#0a0f1f]">Conference</option>
+                    <option value="program" className="bg-[#0a0f1f]">Program</option>
+                    <option value="fellowship" className="bg-[#0a0f1f]">Fellowship</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="deadline" className="block text-sm text-white/70 mb-1">Deadline</label>
+                  <input id="deadline" type="date" value={submitForm.deadline} onChange={(e) => setSubmitForm({ ...submitForm, deadline: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" />
+                </div>
+                <div>
+                  <label htmlFor="location" className="block text-sm text-white/70 mb-1">Location</label>
+                  <input id="location" value={submitForm.location} onChange={(e) => setSubmitForm({ ...submitForm, location: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="e.g., Online, New York, NY" />
+                </div>
+                <div>
+                  <label htmlFor="duration" className="block text-sm text-white/70 mb-1">Duration</label>
+                  <input id="duration" value={submitForm.duration} onChange={(e) => setSubmitForm({ ...submitForm, duration: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="e.g., 3 months, 1 year" />
+                </div>
+                <div>
+                  <label htmlFor="value" className="block text-sm text-white/70 mb-1">Value/Compensation</label>
+                  <input id="value" value={submitForm.value} onChange={(e) => setSubmitForm({ ...submitForm, value: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="e.g., $10,000, Free, $5,000/month" />
+                </div>
+                <div>
+                  <label htmlFor="website" className="block text-sm text-white/70 mb-1">Website/Application Link</label>
+                  <input id="website" type="url" value={submitForm.website} onChange={(e) => setSubmitForm({ ...submitForm, website: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="https://..." />
+                </div>
+                <div>
+                  <label htmlFor="contactEmail" className="block text-sm text-white/70 mb-1">Contact Email *</label>
+                  <input id="contactEmail" type="email" required value={submitForm.contactEmail} onChange={(e) => setSubmitForm({ ...submitForm, contactEmail: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="contact@organization.com" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <label htmlFor="description" className="block text-sm text-white/70 mb-1">Description *</label>
+                <textarea id="description" required rows={4} value={submitForm.description} onChange={(e) => setSubmitForm({ ...submitForm, description: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="Describe the opportunity, what it offers, and who it's for..." />
+              </div>
+              <div className="mt-4">
+                <label htmlFor="requirements" className="block text-sm text-white/70 mb-1">Requirements</label>
+                <textarea id="requirements" rows={3} value={submitForm.requirements} onChange={(e) => setSubmitForm({ ...submitForm, requirements: e.target.value })} className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder:text-white/50" placeholder="List the requirements, qualifications, or eligibility criteria..." />
+              </div>
+              {submitStatus === "success" && (
+                <div className="text-green-400 text-sm mt-4">Thank you! Your opportunity has been submitted for review.</div>
+              )}
+              {submitStatus === "error" && (
+                <div className="text-red-400 text-sm mt-4">Please fill in all required fields.</div>
+              )}
+              <div className="flex items-center justify-end gap-3 mt-6">
+                <button type="button" onClick={() => setShowSubmitModal(false)} className="px-6 py-3 rounded-lg bg-white/5 text-white/80 hover:bg-white/10 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary btn-glow bg-white text-[#0b3d91] flex items-center gap-2">
+                  <Plus size={16} />
+                  Submit Opportunity
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
